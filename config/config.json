@@ -1,0 +1,9 @@
+{
+	"coin_pair" : [
+		"BTC/USDT"
+	],
+	"raft": {
+		"port_start": "10001"
+	}
+
+}
