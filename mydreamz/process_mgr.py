@@ -6,3 +6,4 @@ class ProcessMgr:
         """
         """
         self.service_store = service_store
+

@@ -32,6 +32,11 @@ def initialize():
     """
     ServiceStore.initialize()
 
+def set_ip_port(ip_port):
+    """
+    """
+    ServiceStore.ip_port = ip_port
+ 
 def set_config_mgr(config):
     """
     """
@@ -42,3 +47,10 @@ def get_config_mgr():
     """
     """
     return ServiceStore.config_mgr
+
+def get_ip_port():
+    """
+    """
+    return ServiceStore.ip_port
+
+
