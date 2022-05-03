@@ -15,6 +15,7 @@ class _ServiceStore:
             """ """
             self.config_mgr = None
             self.ip_port = None
+            self.exchangeMgr = None
             self.log_mgr = LogMgr()
 
         def __str__(self):
@@ -45,8 +46,12 @@ def set_config_mgr(config):
     """
     """
     ServiceStore.config_mgr = config
-    
 
+def set_exchange_mgr(exchange_mgr):
+    """
+    """
+    ServiceStore.exchangeMgr = exchange_mgr
+    
 def get_config_mgr():
     """
     """
@@ -63,3 +68,7 @@ def get_log_mgr():
     """
     return ServiceStore.log_mgr
 
+def get_exchange_mgr():
+    """
+    """
+    return ServiceStore.exchangeMgr

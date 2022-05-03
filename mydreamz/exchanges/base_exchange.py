@@ -1,5 +1,4 @@
 
-from mydreamz.exchanges.exchange import exchange
 
 class BaseExchange:
     """
