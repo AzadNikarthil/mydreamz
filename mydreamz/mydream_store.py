@@ -1,3 +1,5 @@
+from mydreamz.log_mgr import LogMgr
+
 class _ServiceStore:
     """
     """
@@ -12,6 +14,8 @@ class _ServiceStore:
         def initialize(self):
             """ """
             self.config_mgr = None
+            self.ip_port = None
+            self.log_mgr = LogMgr()
 
         def __str__(self):
             return "<__ServiceStore obj>"
@@ -53,4 +57,9 @@ def get_ip_port():
     """
     return ServiceStore.ip_port
 
+
+def get_log_mgr():
+    """
+    """
+    return ServiceStore.log_mgr
 

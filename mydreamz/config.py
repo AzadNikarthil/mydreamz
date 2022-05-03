@@ -6,9 +6,11 @@ class ConfigMgr:
     """
     """
 
-    def __init__(self, configFile=CONSTANT.CONFIG_FILE):
+    def __init__(self, service_store, configFile=CONSTANT.CONFIG_FILE):
         """
         """
+        self.service_store = service_store
+        self.log = self.service_store.get_log_mgr().get_logger(__name__)
         self.file = configFile
         self.raft_config = RaftConfig()
         self.config = {}
@@ -17,12 +19,15 @@ class ConfigMgr:
     def init(self):
         """
         """
+        self.log.debug(">")
         with open(self.file) as json_file:
             self.config = json.load(json_file)
+        self.log.debug("<")
 
     def parse(self):
         """
         """
+        self.log.debug(">")
         if "coin_pair" in self.config:
             self.coin_pair =  self.config["coin_pair"]
 
@@ -32,6 +37,7 @@ class ConfigMgr:
 
         self.raft_config.init(raft_data)
         self.raft_config.parse()
+        self.log.debug("<")
 
     def get_raft_config_mgr(self):
         return self.raft_config
