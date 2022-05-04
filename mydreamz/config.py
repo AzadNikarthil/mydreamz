@@ -57,6 +57,7 @@ class RaftConfig:
         """
         self.config_data = None
         self.raft_starting_port = None
+        self.collector_port = None
 
     def init(self, data):
         """
@@ -69,10 +70,20 @@ class RaftConfig:
         if "port_start" in self.config_data:
             self.raft_starting_port = self.config_data["port_start"]
 
+        if "collector_port" in self.config_data:
+            self.collector_port = self.config_data["collector_port"]
+
+
     def get_port_starting_address(self):
         """
         """
         return self.raft_starting_port
+        
+
+    def get_collector_port(self):
+        """
+        """
+        return self.collector_port
         
 
 

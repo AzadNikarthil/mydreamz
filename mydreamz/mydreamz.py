@@ -42,3 +42,4 @@ class MyDreamz:
         """
         """
         self.log.info("ip port {}".format(self.service_store_obj.get_ip_port()))
+        self.processMgr.run()

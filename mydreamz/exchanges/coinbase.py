@@ -9,5 +9,8 @@ class CoinBase(BaseExchange):
         """
         """
         BaseExchange.__init__(self, service_store)
-        self.service_store = service_store
 
+    def get_coin_pair(self):
+        """
+        """
+        pairs = self.service_store.get_config_mgr().get_coin_pair()

@@ -4,7 +4,7 @@ from pysyncobj import SyncObj, SyncObjConf, replicated
 class Storage(SyncObj):
     def __init__(self, selfAddress, partnerAddrs):
         cfg = SyncObjConf(dynamicMembershipChange = True)
-        super(KVStorage, self).__init__(selfAddress, partnerAddrs, cfg)
+        super(Storage, self).__init__(selfAddress, partnerAddrs, cfg)
         self.__data = {}
 
     @replicated
