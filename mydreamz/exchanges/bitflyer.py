@@ -1,7 +1,7 @@
 from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.base_exchange import BaseExchange
 
-class CoinBase(BaseExchange):
+class BitFlyer(BaseExchange):
     """
     """
 
@@ -13,7 +13,7 @@ class CoinBase(BaseExchange):
     def get_coin_pair(self):
         """
         """
-        new_pair = ['BTC/INR']
+        new_pair = ['BTC/JPY']
         pairs = self.service_store.get_config_mgr().get_coin_pair()
         return new_pair
 

@@ -36,7 +36,23 @@ class BaseExchange:
         self.storage = Storage(ip_port, partner_address)
         i = 0
         while True:
-            print("{}:{}".format(self.name, i))
-            self.storage.set(self.name, i)
-            i = i + 1
-            time.sleep(1)
+            try:
+                ticker = self.exchange_obj.fetch_ticker(self.get_coin_pair()[0])
+                if "last" in ticker:
+                    #print("{} {}".format(self.name, ticker['last']))
+                    self.storage.set(self.name, float(ticker['last']))
+                elif "info" in ticker:
+                    value_ticker = ticker['info']
+                    if 'lastPrice' in value_ticker:
+                        #print("{} {}".format(key, value_ticker['lastPrice']))
+                        self.storage.set(self.name, float(value_ticker['last']))
+                    elif 'last_price' in value_ticker:
+                        #print("{} {}".format(key, value_ticker['last_price']))
+                        self.storage.set(self.name, float(value_ticker['last_price']))
+                    elif 'last' in value_ticker:
+                        #print("{} {}".format(key, value_ticker['last']))
+                        self.storage.set(self.name, float(value_ticker['last']))
+            except Exception as ex:
+                print("Exception : {} {}".format(self.name, str(ex)))
+                time.sleep(1)
+         

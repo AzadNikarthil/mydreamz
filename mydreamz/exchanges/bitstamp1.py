@@ -1,7 +1,7 @@
 from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.base_exchange import BaseExchange
 
-class CoinBase(BaseExchange):
+class BitStamp1(BaseExchange):
     """
     """
 
@@ -13,8 +13,7 @@ class CoinBase(BaseExchange):
     def get_coin_pair(self):
         """
         """
-        new_pair = ['BTC/INR']
-        pairs = self.service_store.get_config_mgr().get_coin_pair()
+        new_pair = ['BTC/USD']
         return new_pair
 
 

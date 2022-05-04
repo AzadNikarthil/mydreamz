@@ -1,5 +1,7 @@
 import ccxt
-
+exchae = {
+        'bl3p' : ccxt.bl3p(),
+        }
 exchange = {
         'binance' : ccxt.binance(),
         'ftx' : ccxt.ftx(),
