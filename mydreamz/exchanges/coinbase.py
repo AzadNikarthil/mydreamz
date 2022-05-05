@@ -14,7 +14,6 @@ class CoinBase(BaseExchange):
         """
         """
         new_pair = ['BTC/INR']
-        pairs = self.service_store.get_config_mgr().get_coin_pair()
         return new_pair
 
 

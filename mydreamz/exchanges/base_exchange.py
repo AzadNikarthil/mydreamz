@@ -1,4 +1,5 @@
 import time
+import requests
 
 from mydreamz.raft.raft_helper import RaftHelper
 from mydreamz.raft.storage import Storage
@@ -11,10 +12,13 @@ class BaseExchange:
         """
         """
         self.service_store = service_store
+        self.log = self.service_store.get_log_mgr().get_logger(__name__)
         self.exchange_obj = None
         self.name = None
         self.raft_helper = RaftHelper(self.service_store)
         self.exchange_mgr = self.service_store.get_exchange_mgr()
+        self.currency_exchange_data = {}
+        self.get_currency_exchange_data()
 
     def set_exchange_name(self, name):
         """
@@ -27,6 +31,64 @@ class BaseExchange:
         """
         """
         return self.service_store.get_config_mgr().get_coin_pair()
+
+    def get_currency_exchange_data(self):
+        """
+        """
+        url = "https://open.er-api.com/v6/latest/USD"
+        try:
+            self.currency_exchange_data = requests.get(url).json()
+        except Exception as ex:
+            print(ex)
+            pass
+
+    def convert_to_usd(self, cur_from, value):
+        """
+        """
+        if self.currency_exchange_data:
+            try:
+                if cur_from == None:
+                    return value
+                else:
+                    if cur_from in self.currency_exchange_data['rates']:
+                        rate = self.currency_exchange_data['rates'][cur_from]
+                        return value/rate
+            except:
+                self.get_currency_exchange_data()
+                return value
+
+        else:
+            return value
+
+        
+    def get_fiat_currency_name(self, pair): 
+        currency = pair.split("/")[1]
+        if currency == "USDC":
+            return "USD"
+        elif currency == "USDT":
+            return "USD"
+        elif currency == "UST":
+            return "USD"
+        elif currency == "BUSD":
+            return "USD"
+        elif currency == "DAI":
+            return "USD"
+        elif currency == "TUSD":
+            return "USD"
+        elif currency == "MIM":
+            return "USD"
+        else:
+            return currency
+
+    def handle_currency_convertion(self, price, pair):
+        currency_name = self.get_fiat_currency_name(pair)
+        new_price = self.convert_to_usd(currency_name, price)
+        new_price_dict = {
+                "currency": currency_name,
+                "price": new_price
+                }
+        return new_price_dict
+
     
     def run(self, ip_port):
         """
@@ -34,25 +96,30 @@ class BaseExchange:
         exchange_count = self.exchange_mgr.get_exchange_count()
         partner_address = self.raft_helper.get_partners_address(exchange_count, ip_port)
         self.storage = Storage(ip_port, partner_address)
-        i = 0
+        pair_list = self.get_coin_pair()
         while True:
             try:
-                ticker = self.exchange_obj.fetch_ticker(self.get_coin_pair()[0])
-                if "last" in ticker:
-                    #print("{} {}".format(self.name, ticker['last']))
-                    self.storage.set(self.name, float(ticker['last']))
-                elif "info" in ticker:
-                    value_ticker = ticker['info']
-                    if 'lastPrice' in value_ticker:
-                        #print("{} {}".format(key, value_ticker['lastPrice']))
-                        self.storage.set(self.name, float(value_ticker['last']))
-                    elif 'last_price' in value_ticker:
-                        #print("{} {}".format(key, value_ticker['last_price']))
-                        self.storage.set(self.name, float(value_ticker['last_price']))
-                    elif 'last' in value_ticker:
-                        #print("{} {}".format(key, value_ticker['last']))
-                        self.storage.set(self.name, float(value_ticker['last']))
+                for pair in pair_list:
+                    ticker = self.exchange_obj.fetch_ticker(pair)
+                    if "last" in ticker:
+                        rate = self.handle_currency_convertion(float(ticker['last']), pair)
+                        self.storage.set(self.name, rate)
+                    elif "info" in ticker:
+                        value_ticker = ticker['info']
+                        if 'lastPrice' in value_ticker:
+                            #print("{} {}".format(key, value_ticker['lastPrice']))
+                            rate = self.handle_currency_convertion(float(value_ticker['lastPrice']), pair)
+                            self.storage.set(self.name, rate)
+                        elif 'last_price' in value_ticker:
+                            #print("{} {}".format(key, value_ticker['last_price']))
+                            rate = self.handle_currency_convertion(float(value_ticker['last_price']), pair)
+                            self.storage.set(self.name, rate)
+                        elif 'last' in value_ticker:
+                            #print("{} {}".format(key, value_ticker['last']))
+                            rate = self.handle_currency_convertion(float(value_ticker['last']), pair)
+                            self.storage.set(self.name, rate)
             except Exception as ex:
-                print("Exception : {} {}".format(self.name, str(ex)))
+                self.log.error("Exception : {} {}".format(self.name, pair))
+                self.log.error(ex)
                 time.sleep(1)
          
