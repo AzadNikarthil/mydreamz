@@ -81,6 +81,8 @@ class BaseExchange:
             return currency
 
     def handle_currency_convertion(self, price, pair):
+        """
+        """
         currency_name = self.get_fiat_currency_name(pair)
         new_price = self.convert_to_usd(currency_name, price)
         new_price_dict = {
@@ -89,6 +91,37 @@ class BaseExchange:
                 }
         return new_price_dict
 
+    def update_storage(self, rate):
+        """
+        """
+        old_rates = self.storage.get(self.name)
+        if old_rates:
+            old_rates.update(rate)
+            self.storage.set(self.name, old_rates)
+        else:
+            self.storage.set(self.name, rate)
+
+    def get_crypto_volume(self, ticker, pair):
+        """
+        """
+        return {'volume':"surprise"}
+    def get_crypto_rate(self, ticker, pair):
+        """
+        """
+        value = 0
+        if "last" in ticker:
+            value = float(ticker['last'])
+        elif "info" in ticker:
+            value_ticker = ticker['info']
+            if 'lastPrice' in value_ticker:
+                value = float(value_ticker['lastPrice'])
+            elif 'last_price' in value_ticker:
+                value = float(value_ticker['last_price'])
+            elif 'last' in value_ticker:
+                value = float(value_ticker['last'])
+
+        rate = self.handle_currency_convertion(value, pair)
+        return rate
     
     def run(self, ip_port):
         """
@@ -98,28 +131,15 @@ class BaseExchange:
         self.storage = Storage(ip_port, partner_address)
         pair_list = self.get_coin_pair()
         while True:
-            try:
                 for pair in pair_list:
-                    ticker = self.exchange_obj.fetch_ticker(pair)
-                    if "last" in ticker:
-                        rate = self.handle_currency_convertion(float(ticker['last']), pair)
-                        self.storage.set(self.name, rate)
-                    elif "info" in ticker:
-                        value_ticker = ticker['info']
-                        if 'lastPrice' in value_ticker:
-                            #print("{} {}".format(key, value_ticker['lastPrice']))
-                            rate = self.handle_currency_convertion(float(value_ticker['lastPrice']), pair)
-                            self.storage.set(self.name, rate)
-                        elif 'last_price' in value_ticker:
-                            #print("{} {}".format(key, value_ticker['last_price']))
-                            rate = self.handle_currency_convertion(float(value_ticker['last_price']), pair)
-                            self.storage.set(self.name, rate)
-                        elif 'last' in value_ticker:
-                            #print("{} {}".format(key, value_ticker['last']))
-                            rate = self.handle_currency_convertion(float(value_ticker['last']), pair)
-                            self.storage.set(self.name, rate)
-            except Exception as ex:
-                self.log.error("Exception : {} {}".format(self.name, pair))
-                self.log.error(ex)
-                time.sleep(1)
-         
+                    try:
+                        ticker = self.exchange_obj.fetch_ticker(pair)
+                        kv_rate = self.get_crypto_rate(ticker, pair)
+                        self.update_storage(kv_rate)
+                        #kv_volume = self.get_crypto_volume(ticker, pair)
+                        #self.update_storage(kv_volume)
+                    except Exception as ex:
+                        self.log.error("Exception : {} {}".format(self.name, pair))
+                        self.log.error(ex)
+                        time.sleep(1)
+             

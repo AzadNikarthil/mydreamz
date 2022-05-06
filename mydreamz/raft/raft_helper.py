@@ -26,6 +26,9 @@ class RaftHelper:
            partner_address.append(ip_address_port)
            next_port = next_port + 1
 
+        collector_ip_port =  "{}:{}".format(ip_address, collector_port)
+        if collector_ip_port == ip_port:
+            return partner_address
         partner_address.append("{}:{}".format(ip_address, collector_port))
 
         return partner_address

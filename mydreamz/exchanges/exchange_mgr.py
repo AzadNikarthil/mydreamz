@@ -9,6 +9,7 @@ from mydreamz.exchanges.bitflyer import BitFlyer
 from mydreamz.exchanges.bl3p import Bl3p
 from mydreamz.exchanges.btcalpha import Btcalpha
 from mydreamz.exchanges.btcbox import BtcBox
+from mydreamz.exchanges.bitbank import BitBank
 
 class ExchangeMgr:
     """
@@ -49,6 +50,8 @@ class ExchangeMgr:
             exchange = Btcalpha(self.service_store)
         elif exchange_name == "btcbox":
             exchange = BtcBox(self.service_store)
+        elif exchange_name == "bitbank":
+            exchange = BitBank(self.service_store)
         else:
             exchange = BaseExchange(self.service_store)
         exchange.set_exchange_name(exchange_name)
