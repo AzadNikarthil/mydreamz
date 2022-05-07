@@ -15,6 +15,7 @@ class ConfigMgr:
         self.raft_config = RaftConfig()
         self.config = {}
         self.coin_pair = []
+        self.coins = []
 
     def init(self):
         """
@@ -31,6 +32,9 @@ class ConfigMgr:
         if "coin_pair" in self.config:
             self.coin_pair =  self.config["coin_pair"]
 
+        if "coins" in self.config:
+            self.coins = self.config["coins"]
+
         raft_data = None
         if "raft" in self.config:
            raft_data = self.config["raft"] 
@@ -46,6 +50,11 @@ class ConfigMgr:
         """
         """
         return self.coin_pair
+
+    def get_coins(self):
+        """
+        """
+        return self.coins
 
 
 class RaftConfig:

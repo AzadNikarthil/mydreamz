@@ -1,7 +1,7 @@
 from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.base_exchange import BaseExchange
 
-class BtcAlpha(BaseExchange):
+class BinanceCoinm(BaseExchange):
     """
     """
 
@@ -13,7 +13,7 @@ class BtcAlpha(BaseExchange):
     def get_coin_pair(self):
         """
         """
-        new_pair = ['BTC/EUR']
+        new_pair = ['BTC/USD']
         return new_pair
 
 

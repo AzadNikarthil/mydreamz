@@ -1,7 +1,4 @@
 import ccxt
-exchae = {
-        'bl3p' : ccxt.bl3p(),
-        }
 exchange = {
         'binance' : ccxt.binance(),
         'ftx' : ccxt.ftx(),
@@ -54,6 +51,9 @@ exchange = {
         'cdax' : ccxt.cdax(),
         'cex' : ccxt.cex(),
         'coinbase' : ccxt.coinbase(),
+        'coinbaseprime' : ccxt.coinbaseprime(),
+        'coinbasepro' : ccxt.coinbasepro(),
+        'coincheck' : ccxt.coincheck(),
         }
 
 

@@ -1,7 +1,7 @@
 from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.base_exchange import BaseExchange
 
-class BtcAlpha(BaseExchange):
+class BitVavo(BaseExchange):
     """
     """
 

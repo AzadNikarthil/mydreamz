@@ -1,4 +1,5 @@
 from mydreamz.log_mgr import LogMgr
+from mydreamz.db.db_util import DBUtil
 
 class _ServiceStore:
     """
@@ -16,6 +17,7 @@ class _ServiceStore:
             self.config_mgr = None
             self.ip_port = None
             self.exchangeMgr = None
+            self.db = DBUtil()
             self.log_mgr = LogMgr()
 
         def __str__(self):
@@ -46,12 +48,23 @@ def set_config_mgr(config):
     """
     """
     ServiceStore.config_mgr = config
+ 
+def set_db_util(db):
+    """
+    """
+    ServiceStore.db = db
+
 
 def set_exchange_mgr(exchange_mgr):
     """
     """
     ServiceStore.exchangeMgr = exchange_mgr
     
+def get_db_util():
+    """
+    """
+    return ServiceStore.db
+
 def get_config_mgr():
     """
     """

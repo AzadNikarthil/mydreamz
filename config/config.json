@@ -2,6 +2,10 @@
 	"coin_pair" : [
 		"BTC/USDT"
 	],
+	"coins" : [
+		"BTC",
+		"ETH"
+	],
 	"raft": {
 		"port_start": "10001",
 		"collector_port" : "20001"

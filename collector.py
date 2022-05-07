@@ -20,7 +20,6 @@ if __name__ == '__main__':
     rafthelper = RaftHelper(service_store_obj)
     service_store_obj.set_exchange_mgr(exchangeMgr)
     service_store_obj.set_config_mgr(configMgr)
-    exchangeMgr = ExchangeMgr(service_store_obj)
     exchange_count = exchangeMgr.get_exchange_count()
     raft_helper = RaftHelper(service_store_obj)
     collector_port = int(service_store_obj.get_config_mgr().get_raft_config_mgr().get_collector_port())
