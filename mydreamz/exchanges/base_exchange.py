@@ -100,6 +100,8 @@ class BaseExchange:
             return "USD"
         elif currency == "MIM":
             return "USD"
+        elif currency == "NIS":
+            return "ILS"
         else:
             return currency
 
