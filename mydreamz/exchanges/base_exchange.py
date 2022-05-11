@@ -32,6 +32,30 @@ class BaseExchange:
         """
         return self.service_store.get_config_mgr().get_coin_pair()
 
+    def get_all_coins(self):
+        """
+        """
+        coin_pair = {}
+        pairs = {}
+        pairs["exchange"] = self.name
+        pairs["pairs"] = coin_pair
+
+
+        markets = self.exchange_obj.fetchMarkets()
+        pair_list = []
+        for market_data in markets:
+            pair = market_data['symbol']
+            coin = format(pair.split('/')[0])
+            if coin in coin_pair.keys():
+                pair_list = coin_pair[coin]
+                pair_list.append(pair)
+                coin_pair[coin] = pair_list
+            else:
+                coin_pair[coin] = [pair]
+
+        return pairs
+
+
     def get_coin_pair_v2(self):
         """
         """
@@ -40,6 +64,7 @@ class BaseExchange:
         pairs = {}
         pairs["exchange"] = self.name
         pairs["pairs"] = coin_pair
+
 
         markets = self.exchange_obj.fetchMarkets()
         for market_data in markets:

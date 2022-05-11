@@ -13,6 +13,7 @@ class ConfigMgr:
         self.log = self.service_store.get_log_mgr().get_logger(__name__)
         self.file = configFile
         self.raft_config = RaftConfig()
+        self.neo4j_config = Neo4jConfig()
         self.config = {}
         self.coin_pair = []
         self.coins = []
@@ -39,9 +40,19 @@ class ConfigMgr:
         if "raft" in self.config:
            raft_data = self.config["raft"] 
 
+        neo4j_data = None
+        if "neo4j" in self.config:
+           neo4j_data = self.config["neo4j"] 
+
+
         self.raft_config.init(raft_data)
         self.raft_config.parse()
+        self.neo4j_config.init(neo4j_data)
+        self.neo4j_config.parse()
         self.log.debug("<")
+
+    def get_neo4j_config_mgr(self):
+        return self.neo4j_config
 
     def get_raft_config_mgr(self):
         return self.raft_config
@@ -55,6 +66,55 @@ class ConfigMgr:
         """
         """
         return self.coins
+
+class Neo4jConfig:
+    """
+    """
+
+    def __init__(self):
+        """
+        """
+        self.port = None
+        self.username = None
+        self.password = None
+        self.database = None
+
+    def init(self, data):
+        """
+        """
+        self.config_data = data
+
+    def parse(self):
+        """
+        """
+        if "port" in self.config_data:
+            self.port = self.config_data["port"]
+        if "username" in self.config_data:
+            self.username = self.config_data["username"]
+        if "password" in self.config_data:
+            self.password = self.config_data["password"]
+        if "database" in self.config_data:
+            self.database = self.config_data["database"]
+
+    def get_database(self):
+        """
+        """
+        return self.database
+
+    def get_port(self):
+        """
+        """
+        return self.port
+
+    def get_username(self):
+        """
+        """
+        return self.username
+
+    def get_password(self):
+        """
+        """
+        return self.password
 
 
 class RaftConfig:

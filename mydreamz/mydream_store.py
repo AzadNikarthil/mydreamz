@@ -1,5 +1,5 @@
 from mydreamz.log_mgr import LogMgr
-from mydreamz.db.db_util import DBUtil
+from mydreamz.db.mongodb_util import DBUtil
 
 class _ServiceStore:
     """
@@ -18,6 +18,7 @@ class _ServiceStore:
             self.ip_port = None
             self.exchangeMgr = None
             self.db = DBUtil()
+            self.neo4j = None
             self.log_mgr = LogMgr()
 
         def __str__(self):
@@ -54,16 +55,27 @@ def set_db_util(db):
     """
     ServiceStore.db = db
 
+def set_neo4j_util(db):
+    """
+    """
+    ServiceStore.neo4j = db
+
 
 def set_exchange_mgr(exchange_mgr):
     """
     """
     ServiceStore.exchangeMgr = exchange_mgr
-    
+     
 def get_db_util():
     """
     """
     return ServiceStore.db
+
+def get_neo4j_util():
+    """
+    """
+    return ServiceStore.neo4j
+
 
 def get_config_mgr():
     """

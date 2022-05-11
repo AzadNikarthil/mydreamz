@@ -1,6 +1,6 @@
 import time
 
-from flask import Flask
+from flask import Flask, request
 
 from mydreamz.utility import GetServiceStore
 from mydreamz.config import ConfigMgr
@@ -34,12 +34,47 @@ if __name__ == '__main__':
         """
         """
         data = {}
-        print("request received")
         try:
             for key, value in exchange.items():
                 data[key] = storage.get(key)
         except Exception as ex:
             print(ex)
+        return data
+
+    @app.route('/possible_arbitrage')
+    def get_arbitrage():
+        """
+        """
+        result = {}
+        try:
+            exch = request.args.get('exchange')
+        except Exception as ex:
+            print(ex)
+
+        cursor = service_store_obj.get_db_util().fetch_possible_arbitrage_list(exch)
+        data = []
+        for x in cursor:
+            data.append(x)
+
+        result['arbitrage'] = data
+
+        return result
+
+
+
+    @app.route('/pair')
+    def get_pair():
+        """
+        """
+        data = {}
+        try:
+            exch = request.args.get('exchange')
+        except Exception as ex:
+            print(ex)
+
+        cursor = service_store_obj.get_db_util().get_pair(exch)
+        for x in cursor:
+            data[x['exchange']] = x['pairs']
         return data
 
 

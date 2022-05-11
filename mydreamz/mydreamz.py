@@ -4,6 +4,7 @@ from mydreamz.utility import GetServiceStore
 from mydreamz.config import ConfigMgr
 from mydreamz.process_mgr import ProcessMgr
 from mydreamz.exchanges.exchange_mgr import ExchangeMgr
+from mydreamz.db.neo4j_util import Neo4jUtil
 
 class MyDreamz:
     """
@@ -31,6 +32,9 @@ class MyDreamz:
             self.configMgr.init()
             self.configMgr.parse()
             self.service_store_obj.set_config_mgr(self.configMgr)
+            self.neo4j = Neo4jUtil(self.service_store_obj)
+            self.service_store_obj.set_neo4j_util(self.neo4j)
+            self.neo4j.intialize()
             self.processMgr = ProcessMgr(self.service_store_obj)
 
         except Exception as ex:
