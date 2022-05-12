@@ -1,6 +1,16 @@
 {
 	"coin_pair" : [
-		"BTC/USDT"
+		"BTC/USDT",
+		"BTC/BUSD", 
+		"BUSD/USDT",
+		"BNB/USDT", 
+		"BNB/BRL", 
+		"USDT/BRL",
+		"BNB/USDT", 
+		"USDT/AAVE",
+		"BNB/AAVE",
+		"USDT/BKRW", 
+		"BNB/BKRW"
 	],
 	"coins" : [
 		"BTC",

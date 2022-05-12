@@ -1,3 +1,7 @@
+"""
+fetch all the pair from the exchanges configured
+"""
+
 from mydreamz.utility import GetServiceStore
 from mydreamz.config import ConfigMgr
 from mydreamz.raft.storage import Storage

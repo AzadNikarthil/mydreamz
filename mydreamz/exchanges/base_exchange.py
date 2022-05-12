@@ -136,8 +136,10 @@ class BaseExchange:
         currency_name = self.get_fiat_currency_name(pair)
         new_price = self.convert_to_usd(currency_name, price)
         new_price_dict = {
-                "currency": currency_name,
-                "price": new_price
+                pair: {
+                    "currency": currency_name,
+                    "price": new_price
+                    }
                 }
         return new_price_dict
 

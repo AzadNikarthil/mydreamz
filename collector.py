@@ -1,3 +1,8 @@
+"""
+rate fetched by the main process will be synced to this process through raft
+
+it also has rest api server to communicate to the outside 
+"""
 import time
 
 from flask import Flask, request

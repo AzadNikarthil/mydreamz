@@ -1,3 +1,7 @@
+"""
+find possible triangle arbitrage from the pairs available in an exchange
+"""
+
 import requests
 import json
 import collections
@@ -23,11 +27,11 @@ def add_pair_to_set(pair, coin_list):
     return coin_list
 
 def get_all_pairs(coins):
-    perm = combinations(coins, 2)
+    perm = list(combinations(coins, 2))
     return perm
 
 def all_triangle_combination(permut):
-    perm = combinations(permut, 3)
+    perm = list(combinations(permut, 3))
     return perm
 
 
@@ -46,11 +50,20 @@ def covert_tuple_pair(combi, exchange):
     """
     doc = {}
     pair_list = []
+    coins = []
     for tuple_pair in combi:
+        if tuple_pair[0] not in coins:
+            coins.append(tuple_pair[0])
+        if tuple_pair[1] not in coins:
+            coins.append(tuple_pair[1])
         pair = "{}/{}".format(tuple_pair[0], tuple_pair[1])
         pair_list.append(pair)
 
+    coins.sort()
+    _id = "".join(coins)
+
     doc['pair'] = pair_list
+    doc['key'] = _id 
     doc['exchange'] = exchange
     return doc
 
@@ -70,6 +83,14 @@ if __name__ == "__main__":
     service_store_obj.set_neo4j_util(neo4j)
     neo4j.intialize()
  
+    def filter_valid_pair(all_pairs):
+        valid_pair = []
+        for pair in all_pairs:
+            if service_store_obj.get_neo4j_util().is_pair(pair, EXCHANGE):
+                valid_pair.append(pair)
+
+        return valid_pair
+
     def check_all_pair_valid(combi):
         for pair in combi:
             if not service_store_obj.get_neo4j_util().is_pair(pair, EXCHANGE):
@@ -85,8 +106,6 @@ if __name__ == "__main__":
     for key in content:
         key_count = key_count + 1
         total_pair = len(content[key])
-        if total_pair <= 6:
-            continue
         pair_count = 0
 
         arbitrage_data = []
@@ -106,17 +125,25 @@ if __name__ == "__main__":
 
                 common = set_c1.intersection(set_c2)
                 coins = add_pair_to_set(pair, common)
+                #less number of coin to find arbitrage
                 if len(coins) < 3:
                     continue
+                #lot of coins
+                if len(coins) > 200:
+                    continue
+                print("Total Coins {}".format(len(coins)))
 
                 all_pair = get_all_pairs(coins)
-                possible_arbitrage_list = all_triangle_combination(all_pair)
+                valid_pair = filter_valid_pair(all_pair)
+                print("Valid Pair {}".format(len(valid_pair)))
+                possible_arbitrage_list = all_triangle_combination(valid_pair)
+                print("Possible Arbitrage {}".format(len(possible_arbitrage_list)))
 
 
                 for combi in possible_arbitrage_list:
                     if is_traingle_arbitrash(combi):
-                        if check_all_pair_valid(combi):
-                            doc = covert_tuple_pair(combi, EXCHANGE)
+                        doc = covert_tuple_pair(combi, EXCHANGE)
+                        if not service_store_obj.get_db_util().check_arbitrage_key_present(doc):
                             arbitrage_data.append(doc)
 
         if len(arbitrage_data) > 0:

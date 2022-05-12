@@ -45,6 +45,14 @@ class DBUtil:
         if result.modified_count < 1:
             self.add_pair(data)
 
+    def check_arbitrage_key_present(self, doc):
+        """
+        """
+        cursor = self.arbitrage.find({'key':doc['key']})
+        for x in cursor:
+            return True
+
+        return False
 
     def insert_arbitrage(self, data):
         """

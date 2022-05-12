@@ -1,6 +1,9 @@
 import ccxt
 exchange = {
         'binance' : ccxt.binance(),
+        }
+xchange = {
+        'binance' : ccxt.binance(),
         'ftx' : ccxt.ftx(),
         'ascendex' : ccxt.ascendex(),
         'bitmart' : ccxt.bitmart(),

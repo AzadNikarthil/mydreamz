@@ -1,3 +1,8 @@
+"""
+main script which fetch the rate of the configured coin from the
+configured exchange
+"""
+
 import sys
 import os
 
