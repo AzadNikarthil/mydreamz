@@ -45,6 +45,9 @@ class BaseExchange:
         pair_list = []
         for market_data in markets:
             pair = market_data['symbol']
+            if not self.pair_currently_listed(pair):
+                continue
+
             coin = format(pair.split('/')[0])
             if coin in coin_pair.keys():
                 pair_list = coin_pair[coin]
@@ -54,6 +57,15 @@ class BaseExchange:
                 coin_pair[coin] = [pair]
 
         return pairs
+
+    def pair_currently_listed(self, pair):
+        """
+        """
+        try:
+            ticker = self.exchange_obj.fetch_ticker(pair)
+            return True
+        except Exception as ex:
+            return False
 
 
     def get_coin_pair_v2(self):

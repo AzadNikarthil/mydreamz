@@ -16,7 +16,7 @@ def change_order(pairs):
     p3 = pairs[2]
 
     if p1.split("/")[1] in p2:
-        return paris
+        return pairs
     else:
         return [p1, p3, p2]
 
@@ -26,8 +26,14 @@ def check_arbitrage(pairs, price_details):
     p3 = pairs[2]
 
     p1_price = price_details[p1]['price']
+    if p1_price == 0:
+        return
     p2_price = price_details[p2]['price']
+    if p2_price == 0:
+        return
     p3_price = price_details[p3]['price']
+    if p3_price == 0:
+        return
 
     p1_count = 1
     p2_count = p1_price
@@ -37,6 +43,7 @@ def check_arbitrage(pairs, price_details):
     print("{}:{}".format(p1, p1_price))
     print("{}:{} {}".format(p2, p2_price, p3_count))
     print("{}:{} {}".format(p3, p3_price, p1_count_end))
+    print("======================")
 
 
  
@@ -56,7 +63,6 @@ if __name__ == "__main__":
         arbitrage = x
         pairs = change_order(arbitrage["pair"])
 
-        print(pairs)
 
         x = requests.get("http://localhost:5000")
         content = json.loads(x.text)[EXCHANGE]
