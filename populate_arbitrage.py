@@ -109,6 +109,7 @@ if __name__ == "__main__":
         pair_count = 0
 
         arbitrage_data = []
+        key_list = []
         for pair in content[key]:
             pair_count = pair_count + 1
             print("Keys {}/{}, Pair {}/{} {}".format(total_key, key_count, total_pair, pair_count, pair))
@@ -131,23 +132,26 @@ if __name__ == "__main__":
                 #lot of coins
                 if len(coins) > 200:
                     continue
-                print("Total Coins {}".format(len(coins)))
+                #print("Total Coins {}".format(len(coins)))
 
                 all_pair = get_all_pairs(coins)
                 valid_pair = filter_valid_pair(all_pair)
-                print("Valid Pair {}".format(len(valid_pair)))
+                #print("Valid Pair {}".format(len(valid_pair)))
                 possible_arbitrage_list = all_triangle_combination(valid_pair)
-                print("Possible Arbitrage {}".format(len(possible_arbitrage_list)))
+                #print("Possible Arbitrage {}".format(len(possible_arbitrage_list)))
 
 
                 for combi in possible_arbitrage_list:
                     if is_traingle_arbitrash(combi):
                         doc = covert_tuple_pair(combi, EXCHANGE)
                         if not service_store_obj.get_db_util().check_arbitrage_key_present(doc):
-                            arbitrage_data.append(doc)
+                            if doc['key'] not in key_list:
+                                arbitrage_data.append(doc)
+                                key_list.append(doc['key'])
 
         if len(arbitrage_data) > 0:
             service_store_obj.get_db_util().insert_arbitrage(arbitrage_data)
+            #pass
 
 
     service_store_obj.get_neo4j_util().close()

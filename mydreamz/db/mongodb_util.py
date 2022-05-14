@@ -10,7 +10,20 @@ class DBUtil:
 
         self.pair = self.mydreamz_db["pair"]
         self.arbitrage = self.mydreamz_db["arbitrage"]
+        self.arbitrage_live = self.mydreamz_db["arbitrage_live"]
         self.exchange_rate = self.mydreamz_db["exchange_rate"]
+
+    def sync_with_arbitrage_live(self, data):
+        """
+        """
+        exchange = data['exchange']
+        pair = data['pair']
+        key = "".join(pair).replace("/", "", 3)
+        cursor = self.arbitrage_live.find({"key": key})
+        for x in cursor:
+            return
+        data['key'] = key
+        self.arbitrage_live.insert_one(data)
 
     def add_pair(self, data):
         """
@@ -38,6 +51,8 @@ class DBUtil:
             cursor = self.exchange_rate.find({'exchange': exchange, 'pair': pair}, {'_id': False})
             for x in cursor:
                 return x
+
+        return {}
 
 
     def get_pair(self, exch):

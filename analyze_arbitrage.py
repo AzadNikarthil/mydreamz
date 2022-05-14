@@ -40,27 +40,27 @@ def is_typeA_pair(p1, p2):
     else:
         return False
 
-def check_arbitrage(pairs):
+def check_arbitrage(pairs, data, db):
     p1 = pairs[0]
     p2 = pairs[1]
     p3 = pairs[2]
 
     x = requests.get("http://localhost:5000/?exchange={}&pair={}".format(EXCHANGE, p1))
     p1_price_details = json.loads(x.text)
-    p1_price = p1_price_details['price']
-    if p1_price == 0:
+    p1_price = p1_price_details.get('price', 0)
+    if p1_price == 0 or p1_price == None:
         return
 
     x = requests.get("http://localhost:5000/?exchange={}&pair={}".format(EXCHANGE, p2))
     p2_price_details = json.loads(x.text)
-    p2_price = p2_price_details['price']
-    if p2_price == 0:
+    p2_price = p2_price_details.get('price', 0)
+    if p2_price == 0 or p2_price == None:
         return
 
     x = requests.get("http://localhost:5000/?exchange={}&pair={}".format(EXCHANGE, p3))
     p3_price_details = json.loads(x.text)
-    p3_price = p3_price_details['price']
-    if p3_price == 0:
+    p3_price = p3_price_details.get('price', 0)
+    if p3_price == 0 or p3_price == None:
         return
     """
     Type A
@@ -98,6 +98,7 @@ def check_arbitrage(pairs):
             print("{}:{} ({}:{})".format(p2, p2_price, c1_p2_count, c2_p2_count))
             print("{}:{} ({}:{})".format(p3, p3_price, c1_p3_count, c2_p3_count))
             print("======================")
+            db.sync_with_arbitrage_live(data)
     else:
         c2_p3_count = out_coin_count
         c1_p3_count = (1/p3_price) * c2_p3_count
@@ -108,6 +109,7 @@ def check_arbitrage(pairs):
             print("{}:{} ({}:{})".format(p2, p2_price, c1_p2_count, c2_p2_count))
             print("{}:{} ({}:{})".format(p3, p3_price, c1_p3_count, c2_p3_count))
             print("======================")
+            db.sync_with_arbitrage_live(data)
 
  
 if __name__ == "__main__":
@@ -128,12 +130,12 @@ if __name__ == "__main__":
             pairs = change_order(arbitrage["pair"])
 
 
-            try:
-                check_arbitrage(pairs)
-                pairs.reverse()
-                check_arbitrage(pairs)
-            except Exception as ex:
-                pass
+            #try:
+            check_arbitrage(pairs, x, db)
+            pairs.reverse()
+            check_arbitrage(pairs, x, db)
+            #except Exception as ex:
+            #    pass
 
 
         
