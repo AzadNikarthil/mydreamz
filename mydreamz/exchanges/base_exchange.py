@@ -2,6 +2,7 @@ import time
 import requests
 
 from mydreamz.raft.raft_helper import RaftHelper
+from mydreamz.db.mongodb_util import DBUtil
 from mydreamz.raft.storage import Storage
 
 class BaseExchange:
@@ -13,12 +14,14 @@ class BaseExchange:
         """
         self.service_store = service_store
         self.log = self.service_store.get_log_mgr().get_logger(__name__)
+        self.db = DBUtil()
         self.exchange_obj = None
         self.name = None
         self.raft_helper = RaftHelper(self.service_store)
         self.exchange_mgr = self.service_store.get_exchange_mgr()
         self.currency_exchange_data = {}
         self.get_currency_exchange_data()
+        self.loop = 0
 
     def set_exchange_name(self, name):
         """
@@ -155,6 +158,27 @@ class BaseExchange:
                 }
         return new_price_dict
 
+    def update_db(self, rate):
+        """
+        """
+        pair = list(rate.keys())[0]
+        currency = rate[pair]["currency"]
+        price = rate[pair]["price"]
+        data = {
+                "exchange": self.name,
+                "pair": pair,
+                "currency": currency,
+                "price": price
+                }
+
+        print(self.loop)
+        if self.loop == 0:
+            print("add {}".format(data))
+            self.db.add_pair_price(data)
+        else:
+            print("update {}".format(data))
+            self.db.update_pair_price(data)
+
     def update_storage(self, rate):
         """
         """
@@ -195,16 +219,19 @@ class BaseExchange:
         partner_address = self.raft_helper.get_partners_address(exchange_count, ip_port)
         self.storage = Storage(ip_port, partner_address)
         pair_list = self.get_coin_pair()
+        self.db.delete_all_pair_price(self.name)
         while True:
                 for pair in pair_list:
                     try:
                         ticker = self.exchange_obj.fetch_ticker(pair)
                         kv_rate = self.get_crypto_rate(ticker, pair)
-                        self.update_storage(kv_rate)
+                        #self.update_storage(kv_rate)
+                        self.update_db(kv_rate)
                         #kv_volume = self.get_crypto_volume(ticker, pair)
                         #self.update_storage(kv_volume)
                     except Exception as ex:
                         self.log.error("Exception : {} {}".format(self.name, pair))
                         self.log.error(ex)
                         time.sleep(1)
+                self.loop = self.loop + 1
              

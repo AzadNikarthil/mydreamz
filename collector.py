@@ -38,12 +38,21 @@ if __name__ == '__main__':
     def exchange_rate():
         """
         """
-        data = {}
+        exch = None
+        pair = None
         try:
-            for key, value in exchange.items():
-                data[key] = storage.get(key)
+            exch = request.args.get('exchange')
         except Exception as ex:
             print(ex)
+        try:
+            pair = request.args.get('pair')
+        except Exception as ex:
+            print(ex)
+
+        if exch == None and pair == None:
+            return {"Info": "Pass exchange name"}
+
+        data = service_store_obj.get_db_util().get_exchange_rate(exch, pair)
         return data
 
     @app.route('/possible_arbitrage')
