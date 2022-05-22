@@ -23,6 +23,15 @@ if __name__ == '__main__':
 
     exchange_details = service_store_obj.get_exchange_mgr().get_exchange_details()
     for key, value in exchange_details.items():
+        if key == "binance":
+            print("skipped binance")
+            continue
+        elif key == "coinbase":
+            print("skipped coinbase")
+            continue
+        elif key == "wazirx":
+            print("skipped coinbase")
+            continue
         try:
             exchange = service_store_obj.get_exchange_mgr().get_exchange_obj(key)
             value = exchange.get_all_coins()

@@ -5,6 +5,7 @@ it also has rest api server to communicate to the outside
 """
 import time
 
+import logging
 from flask import Flask, request
 
 from mydreamz.utility import GetServiceStore
@@ -15,6 +16,7 @@ from mydreamz.exchanges.exchange_mgr import ExchangeMgr
 from mydreamz.raft.raft_helper import RaftHelper
 
 app = Flask(__name__)
+
 
 if __name__ == '__main__':
     service_store_obj = GetServiceStore()
@@ -32,7 +34,9 @@ if __name__ == '__main__':
     ip_port = "127.0.0.1:{}".format(collector_port)
     partner_address = raft_helper.get_partners_address(exchange_count, ip_port)
 
-    storage = Storage(ip_port, partner_address)
+    #storage = Storage(ip_port, partner_address)
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
        
     @app.route('/')
     def exchange_rate():

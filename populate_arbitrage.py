@@ -15,7 +15,7 @@ from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.exchange_mgr import ExchangeMgr
 from mydreamz.db.neo4j_util import Neo4jUtil
 
-EXCHANGE="binance"
+EXCHANGE="bitbns"
 
 def add_pair_to_set(pair, coin_list):
     split_list = pair.split("/")
@@ -128,17 +128,19 @@ if __name__ == "__main__":
                 coins = add_pair_to_set(pair, common)
                 #less number of coin to find arbitrage
                 if len(coins) < 3:
+                    print("total coin count {}".format(len(coins)))
                     continue
                 #lot of coins
                 if len(coins) > 200:
+                    print("total coin count {}".format(len(coins)))
                     continue
                 #print("Total Coins {}".format(len(coins)))
 
                 all_pair = get_all_pairs(coins)
                 valid_pair = filter_valid_pair(all_pair)
-                #print("Valid Pair {}".format(len(valid_pair)))
+                print("Valid Pair {}".format(len(valid_pair)))
                 possible_arbitrage_list = all_triangle_combination(valid_pair)
-                #print("Possible Arbitrage {}".format(len(possible_arbitrage_list)))
+                print("Possible Arbitrage {}".format(len(possible_arbitrage_list)))
 
 
                 for combi in possible_arbitrage_list:

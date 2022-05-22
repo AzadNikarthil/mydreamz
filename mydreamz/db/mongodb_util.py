@@ -1,4 +1,5 @@
 import pymongo
+from datetime import datetime
 
 class DBUtil:
 
@@ -23,7 +24,19 @@ class DBUtil:
         for x in cursor:
             return
         data['key'] = key
-        self.arbitrage_live.insert_one(data)
+        data['c_t'] = datetime.now()
+        self.arbitrage_live.insert_one(data.copy())
+
+    def delete_arbitrage_live(self, data):
+        """
+        """
+        self.arbitrage_live.delete_one({"key": data["key"]})
+
+    def fetch_arbitrage_live(self):
+        """
+        """
+        cursor = self.arbitrage_live.find()
+        return cursor
 
     def add_pair(self, data):
         """

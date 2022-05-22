@@ -51,6 +51,7 @@ class BaseExchange:
             if not self.pair_currently_listed(pair):
                 continue
 
+            print(pair)
             coin = format(pair.split('/')[0])
             if coin in coin_pair.keys():
                 pair_list = coin_pair[coin]
@@ -107,7 +108,6 @@ class BaseExchange:
 
     def convert_to_usd(self, cur_from, value):
         """
-        """
         if self.currency_exchange_data:
             try:
                 if cur_from == None:
@@ -122,10 +122,13 @@ class BaseExchange:
 
         else:
             return value
+        """
+        return value
 
         
     def get_fiat_currency_name(self, pair): 
         currency = pair.split("/")[1]
+        """
         if currency == "USDC":
             return "USD"
         elif currency == "USDT":
@@ -144,8 +147,10 @@ class BaseExchange:
             return "ILS"
         else:
             return currency
+        """
+        return currency
 
-    def handle_currency_convertion(self, price, pair):
+    def handle_currency_convertion(self, pair, price, bid, ask):
         """
         """
         currency_name = self.get_fiat_currency_name(pair)
@@ -153,7 +158,9 @@ class BaseExchange:
         new_price_dict = {
                 pair: {
                     "currency": currency_name,
-                    "price": new_price
+                    "price": new_price,
+                    "bid": bid,
+                    "ask": ask
                     }
                 }
         return new_price_dict
@@ -164,11 +171,15 @@ class BaseExchange:
         pair = list(rate.keys())[0]
         currency = rate[pair]["currency"]
         price = rate[pair]["price"]
+        bid = rate[pair].get("bid", 0)
+        ask = rate[pair].get("ask", 0)
         data = {
                 "exchange": self.name,
                 "pair": pair,
                 "currency": currency,
-                "price": price
+                "price": price,
+                "bid": bid,
+                "ask": ask
                 }
 
         print(self.loop)
@@ -198,6 +209,8 @@ class BaseExchange:
         """
         """
         value = 0
+        bid = 0
+        ask = 0
         if "last" in ticker:
             value = float(ticker['last'])
         elif "info" in ticker:
@@ -208,8 +221,12 @@ class BaseExchange:
                 value = float(value_ticker['last_price'])
             elif 'last' in value_ticker:
                 value = float(value_ticker['last'])
+        if "bid" in ticker:
+            bid = ticker['bid']
+        if "ask" in ticker:
+            ask = ticker['ask']
 
-        rate = self.handle_currency_convertion(value, pair)
+        rate = self.handle_currency_convertion(pair, value, bid, ask)
         return rate
     
     def run(self, ip_port):

@@ -12,7 +12,7 @@ from mydreamz.exchanges.exchange import exchange
 from mydreamz.exchanges.exchange_mgr import ExchangeMgr
 from mydreamz.db.neo4j_util import Neo4jUtil
 
-EXCHANGE="binance"
+EXCHANGE="bitbns"
 
 if __name__ == '__main__':
     service_store_obj = GetServiceStore()

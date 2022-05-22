@@ -1,6 +1,9 @@
 import ccxt
 exchange = {
         'binance' : ccxt.binance(),
+        'coinbase' : ccxt.coinbase(),
+        'wazirx': ccxt.wazirx(),
+        'bitbns': ccxt.bitbns(),
         }
 xchange = {
         'binance' : ccxt.binance(),
